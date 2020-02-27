@@ -1,2 +1,3 @@
 # text_algorithms
-Text algorithms code for study laboratory
+Text algorithms code for laboratory
+
