@@ -49,26 +49,62 @@ def transition_table(pattern, alphabet):
             result[q][a] = k
     return result
 
+def kmp_string_matching(text, pattern):
+    pi = prefix_function(pattern)
+    q = 0
+    ans = 0
+    for i in range(0, len(text)):
+        while q > 0 and pattern[q] != text[i]:
+            q = pi[q-1]
+        if pattern[q] == text[i]:
+            q = q + 1
+        if q == len(pattern):
+            ans += i + 1 -q
+            q = pi[q-1]
+
+    return ans
+
+def prefix_function(pattern):
+    pi = [0]
+    k = 0
+    for q in range(1, len(pattern)):
+        while k > 0 and pattern[k] != pattern[q]:
+            k = pi[k-1]
+        if pattern[k] == pattern[q]:
+            k = k + 1
+        pi.append(k)
+    return pi
+
 @timer
 def main_naive():
     ans = 0
-    with open("konst.txt") as f:
+    with open("kon.txt") as f:
         for line in load_chunk(f):
-            ans += naive(line, "art")
+            ans += naive(line, "kruszwil")
     print(f"{ans}")
 
 @timer
 def main_fa():
     ans = 0
-    alphabet = {chr(x) for x in range(32, 127) } | {'\n'}
+    alphabet = {chr(x) for x in range(0, 255) } | {'\n'}
 
-    with open("konst.txt") as f:
+    with open("kon.txt") as f:
         for line in load_chunk(f):
-            ans += fa_string_matching(line, transition_table("art", alphabet))
+            ans += fa_string_matching(line, transition_table("kruszwil", alphabet))
+    print(f"{ans}")
+
+@timer
+def main_kmp():
+    ans = 0
+    with open("kon.txt") as f:
+        for line in load_chunk(f):
+            ans += kmp_string_matching(line, "kruszwil")
+
     print(f"{ans}")
 
 if __name__ == "__main__":
     main_naive()
     main_fa()
+    main_kmp()
 
 
